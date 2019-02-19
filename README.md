@@ -1,30 +1,40 @@
-# docker-saltstack
+# Setting up saltstack locally with docker
+
 Docker Compose setup to spin up a salt master and minions.
 
-You can read a full article describing how to use this setup [here](https://medium.com/@timlwhite/the-simplest-way-to-learn-saltstack-cd9f5edbc967).
+## Requirements:
 
-You will need a system with Docker and Docker Compose installed to use this project.
+- docker (18.09.2+)
+- docker-compose (1.23.2+)
 
-Just run:
+(*Tested Versions)
 
-`docker-compose up`
+## Setup
+To start master and two minions run:
 
-from a checkout of this directory, and the master and minion will start up with debug logging to the console.
+`./bin/start.sh`
 
-Then you can run (in a separate shell window):
+Console output from instances is redirected to `./docker-compose.log` file.
 
-`docker-compose exec salt-master bash`
+FYI: master and minions will be running in `debug` mode, to change that, modify `Dockerfiles`.
 
-and it will log you into the command line of the salt-master server.
+To log into master or minions run:
 
-From that command line you can run something like:
+`./bin/login-{master,minion1,minion2}.sh` with suffix matching specific instance.
+
+To validate installation one can run:
 
 `salt '*' test.ping`
 
-and in the window where you started docker compose, you will see the log output of both the master sending the command and the minion receiving the command and replying.
+From any instance.
 
-[The Salt Remote Execution Tutorial](https://docs.saltstack.com/en/latest/topics/tutorials/modules.html) has some quick examples of the comamnds you can run from the master.
+## How to proceed
 
-Note: you will see log messages like : "Could not determine init system from command line" - those are just because salt is running in the foreground and not from an auto-startup.
+You may take a look at this [Official Tutorial](https://docs.saltstack.com/en/latest/topics/tutorials/walkthrough.html#sending-the-first-commands).
+
+
+## Troubleshooting
+
+FYI: you will see log messages like : "Could not determine init system from command line" - those are just because salt is running in the foreground and not from an auto-startup.
 
 The salt-master is set up to accept all minions that try to connect.  Since the network that the salt-master sees is only the docker-compose network, this means that only minions within this docker-compose service network will be able to connect (and not random other minions external to docker).
