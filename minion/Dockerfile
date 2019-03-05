@@ -7,6 +7,8 @@ RUN yum install -y epel-release && \
     yum clean all && \
     rm -rf /var/cache/yum
 
-RUN sed -i "s|#master: salt|master: salt-master|g" /etc/salt/minion
+RUN rm /etc/salt/minion && \
+    echo '# Starting from empty file' >> /etc/salt/minion && \
+    echo 'master: salt-master' >> /etc/salt/minion
 
 ENTRYPOINT ["salt-minion", "-l", "debug"]
