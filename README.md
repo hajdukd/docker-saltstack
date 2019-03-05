@@ -22,11 +22,11 @@ To log into master or minions run:
 
 `./bin/login-{master,minion1,minion2}.sh` with suffix matching specific instance.
 
-To validate installation one can run:
+To validate the installation run below command from master:
 
 `salt '*' test.ping`
 
-From any instance.
+Result should contain two minions.
 
 ## How to proceed
 
