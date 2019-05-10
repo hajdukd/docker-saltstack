@@ -33,7 +33,9 @@ sleep 20
 
 if [[ "$STATE_APPLY" == "apply-on-start" ]]
 then
+    set +e
     salt '*' state.apply
+    set -e
 fi
 
 while true
