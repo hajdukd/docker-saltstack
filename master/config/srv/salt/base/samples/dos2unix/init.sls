@@ -1,3 +1,4 @@
+#!jinja|yaml
 {% set d2u_properties = pillar.get('dos2unix', {}) %}
 dos2unix:
   pkg.installed:
