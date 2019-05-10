@@ -32,8 +32,9 @@ fi
 if [[ "$STATE_APPLY" == "apply-on-start" ]]
 then
     set +e
-    echo "Waiting for master to become available to apply state. (20 sec)"
-    sleep 20
+    echo "Waiting for master to become available to apply state. (10 sec)"
+    sleep 10
+    echo "salt '*' state.apply"
     salt '*' state.apply
     set -e
 fi

@@ -1,2 +1,6 @@
 packages:
- - nginx
+   wget: {}
+#  wget:
+#    version: latest
+#    fromrepo: central
+

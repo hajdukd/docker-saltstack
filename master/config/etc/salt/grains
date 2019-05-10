@@ -1,4 +1,5 @@
 test: test
 # validate version available in your repo /srv/salt/pillar/samples/dos2unix/init.sls
-#roles:
+roles:
+  - samples.packages
 #  - samples.dos2unix
