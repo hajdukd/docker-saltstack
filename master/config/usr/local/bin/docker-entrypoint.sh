@@ -29,11 +29,11 @@ else
     salt-minion -d
 fi
 
-sleep 20
-
 if [[ "$STATE_APPLY" == "apply-on-start" ]]
 then
     set +e
+    echo "Waiting for master to become available to apply state. (20 sec)"
+    sleep 20
     salt '*' state.apply
     set -e
 fi
