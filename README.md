@@ -1,6 +1,6 @@
 # Setting up saltstack locally with docker
 
-Docker Compose setup to spin up a salt master and minions.
+Docker Compose setup to spin up a salt master and minion.
 
 ## Requirements:
 
@@ -10,25 +10,58 @@ Docker Compose setup to spin up a salt master and minions.
 (*Tested Versions)
 
 ## Setup
-To start master and two minions run:
+To start master and minion run:
 
 `./bin/start.sh`
 
 Console output from instances is redirected to `./docker-compose.log` file.
 
-FYI: master and minions will be running in `debug` mode, to change that, modify `Dockerfiles`.
+FYI: In case you want master and minion running in `debug` mode, modify `Dockerfiles ENTRYPOINT` to:
 
-To log into master or minions run:
+`ENTRYPOINT ["docker-entrypoint.sh", "debug"]`
 
-`./bin/login-{master,minion1,minion2}.sh` with suffix matching specific instance.
+To log in into master or minion run:
+
+`./bin/login-{master,minion}.sh` with suffix matching specific instance.
 
 To validate the installation run below command from master:
 
 `salt '*' test.ping`
 
-Result should contain two minions.
+Result should contain two minions:
 
-## How to proceed
+- salt-master (as his own minion)
+- salt-minion (as a minion only)
+
+## Cluster configuration
+
+To change cluster configuration first take a look at setup of `./config` folders.
+
+To define roles which should be installed by minions (or any other extra static information), `grains` can be used.
+Keep in mind that those roles have to be correctly structured in `base, pillar, overrides`. Example of such roles are available under `base\samples`.
+Roles can be used to define for example services or packages that should be installed on a minion.
+
+All minions are by default configured to install yum repositories defined in `pillar\core\repositories` in case you need some specific ones.
+
+## Simplifications
+
+Master has a few aliases built in to make working with it easier:
+
+`alias base='cd /srv/salt/base`
+
+`alias pillar='cd /srv/salt/pillar`
+
+`alias overrides='cd /srv/salt/pillar/overrides`
+
+`alias saltlogs='cd /var/log/salt`
+
+Built in editing tools: `less`, `vim`.
+
+To apply all states on start modify master `Dockerfiles ENTRYPOINT` adding flag:
+
+`ENTRYPOINT ["docker-entrypoint.sh", "apply-on-start"]`
+
+## Learning
 
 You may take a look at this [Official Tutorial](https://docs.saltstack.com/en/latest/topics/tutorials/walkthrough.html#sending-the-first-commands).
 

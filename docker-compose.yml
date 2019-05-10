@@ -5,10 +5,13 @@ services:
     build:
       context: ./master
       dockerfile: Dockerfile
+      args:
+        - MASTER_ID=salt-master
   salt-minion:
     build:
       context: ./minion
       dockerfile: Dockerfile
+      args:
+        - MINION_ID=salt-minion
     depends_on:
       - salt-master
-    scale: 2
