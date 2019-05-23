@@ -2,12 +2,18 @@ version: '2.2'
 
 services: 
   salt-master:
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     build:
       context: ./master
       dockerfile: Dockerfile
       args:
         - MASTER_ID=salt-master
   salt-minion:
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     build:
       context: ./minion
       dockerfile: Dockerfile

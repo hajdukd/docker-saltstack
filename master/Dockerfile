@@ -1,4 +1,4 @@
-FROM centos:7
+FROM local/c7-systemd:latest
 
 # Master is also Minion of his own
 ARG MASTER_ID
@@ -19,7 +19,9 @@ RUN rm /etc/salt/master && \
     rm /etc/salt/minion && \
     echo '# Starting from empty file' >> /etc/salt/minion && \
     echo 'master: salt-master' >> /etc/salt/minion && \
-    echo "id: ${MASTER_ID}" >> /etc/salt/minion
+    echo "id: ${MASTER_ID}" >> /etc/salt/minion && \
+    systemctl enable salt-master && \
+    systemctl enable salt-minion
 
 RUN touch /etc/profile.d/00-aliases.sh && \
     echo "alias base='cd /srv/salt/base'" >> /etc/profile.d/00-aliases.sh && \
@@ -33,7 +35,6 @@ ADD config/srv/salt/overrides /srv/salt/pillar/overrides
 
 COPY config/etc/salt/master.d/*.conf /etc/salt/master.d/
 COPY config/etc/salt/grains /etc/salt/
+#COPY config/usr/local/bin/docker-entrypoint.sh /usr/local/bin/
 
-COPY config/usr/local/bin/docker-entrypoint.sh /usr/local/bin/
-
-ENTRYPOINT ["docker-entrypoint.sh", "debug", "apply-on-start"]
+CMD ["/usr/sbin/init"]

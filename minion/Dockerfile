@@ -1,4 +1,4 @@
-FROM centos:7
+FROM local/c7-systemd:latest
 
 ARG MINION_ID
 
@@ -13,10 +13,10 @@ RUN yum install -y epel-release && \
 RUN rm /etc/salt/minion && \
     echo '# Starting from empty file' >> /etc/salt/minion && \
     echo 'master: salt-master' >> /etc/salt/minion && \
-    echo "id: ${MINION_ID}" >> /etc/salt/minion
+    echo "id: ${MINION_ID}" >> /etc/salt/minion && \
+    systemctl enable salt-minion
 
 COPY config/etc/salt/grains /etc/salt/
+#COPY config/usr/local/bin/docker-entrypoint.sh /usr/local/bin/
 
-COPY config/usr/local/bin/docker-entrypoint.sh /usr/local/bin/
-
-ENTRYPOINT ["docker-entrypoint.sh", "debug"]
+CMD ["/usr/sbin/init"]
