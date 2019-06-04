@@ -9,22 +9,34 @@ Docker Compose setup to spin up a salt master and minion.
 
 (*Tested Versions)
 
-## Setup #FIXME after systemctl changes
+## Setup
+
+Before firing docker-compose, first build the base image used by it:
+
+`./bin/build-base-image.sh`
+
+This will create a centos7 base image with enabled systemd (System and Service Manager), to run multiple services within the same container.
+(FYI: Have in mind that Docker was designed to run container per service, that's why enabling systemd is considered dangerous and has maltitude of consequences).
+
+To use the new image to build salt-master and salt-minion images run:
+
+`docker-compose build`
+
 To start master and minion run:
 
 `./bin/start.sh`
 
 Console output from instances is redirected to `./docker-compose.log` file.
 
-FYI: In case you want master and minion running in `debug` mode, modify `Dockerfiles ENTRYPOINT` to:
-
-`ENTRYPOINT ["docker-entrypoint.sh", "debug"]`
-
 To log in into master or minion run:
 
 `./bin/login-{master,minion}.sh` with suffix matching specific instance.
 
-To validate the installation run below command from master:
+To validate the installation run one of below commands from master:
+
+`salt-key`
+
+or
 
 `salt '*' test.ping`
 
@@ -38,10 +50,12 @@ Result should contain two minions:
 To change cluster configuration first take a look at setup of `./config` folders.
 
 To define roles which should be installed by minions (or any other extra static information), `grains` can be used.
-Keep in mind that those roles have to be correctly structured in `base, pillar, overrides`. Example of such roles are available under `base\samples`.
+Keep in mind that those roles have to be correctly structured in `base, pillar, overrides`. Example of such roles are available under `master/srv/base/samples`.
 Roles can be used to define for example services or packages that should be installed on a minion.
 
-All minions are by default configured to install yum repositories defined in `pillar\core\repositories` in case you need some specific ones.
+All minions are by default configured to install yum repositories defined in `master/srv/pillar/core/repositories` in case you need some specific ones.
+In case you cannot reach some repository to install required packages you can copy them directly into `master/srv/base/pillar/overrides` structure
+or create a yum artifact and copy it into `master/tmp/extras`
 
 ## Simplifications
 
@@ -57,9 +71,13 @@ Master has a few aliases built in to make working with it easier:
 
 Built in editing tools: `less`, `vim`.
 
-To apply all states on start modify master `Dockerfiles ENTRYPOINT` adding flag:
+## Creating image from salt-minion
 
-`ENTRYPOINT ["docker-entrypoint.sh", "apply-on-start"]`
+In case you want to create reusable image from salt-minion, you can run:
+
+`./bin/generate-image-from-salt-minion.sh`
+
+Have in mind that everything related to salt itself will be removed in the process to leave a clean container with salt configuration applied.
 
 ## Learning
 
