@@ -2,6 +2,7 @@ version: '2.2'
 
 services: 
   salt-master:
+    container_name: salt-master
     privileged: true
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
@@ -11,6 +12,7 @@ services:
       args:
         - MASTER_ID=salt-master
   salt-minion:
+    container_name: salt-minion
     privileged: true
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
